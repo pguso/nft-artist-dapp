@@ -1,27 +1,28 @@
-# NftArtist
+### Get your NFT project site up and running
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.0.2.
+Add .env file to the root of the project and add your wallet private key into it
 
-## Development server
+```
+PRIVATE_KEY=***
+```
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-## Code scaffolding
+Deploy the smart contracts to polygon testnet or mainnet
+```
+# testnet
+yarn sc:deploy:testnet
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+# mainnet
+yarn sc:deploy:mainnet
+```
 
-## Build
+Add the addresses that are printed out on the console for market and nft to 
+the environment.ts (testnet) and environment.prod.ts (mainnet)
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+```
+export const environment = {
+  nftAddress: '0x7f35303Bf96da77F90f6Dbb91C384baEF72C4253',
+  marketAddress: '0x7ab9aB7a609F626Cb0E7740d23aBef8B4a8Fe3c2',
+  ...
+};
+```

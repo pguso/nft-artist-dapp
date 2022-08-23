@@ -1,0 +1,35 @@
+<header>
+  <nav class="navbar navbar-expand-lg p-0">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <img src="assets/images/Logo.png" alt="">
+      </a>
+      <ul class="navbar-nav ms-auto" for="menu">
+        <li class="nav-item">
+          <a class="nav-link active" routerLink="">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="upload">Upload</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="btn btn-primary"
+             href="#"
+             [ngClass]="{' header__connected': walletAddress}"
+             (click)="connectToWallet()"
+          >
+            <span *ngIf="!walletAddress; else address">
+          Connect Wallet
+        </span>
+            <ng-template #address>
+              <span class="connected">
+            <!--<i class="fas fa-wallet"></i> {{walletAddress}}-->
+            <i class="far fa-user"></i> {{walletAddress}}
+          </span>
+            </ng-template>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</header>

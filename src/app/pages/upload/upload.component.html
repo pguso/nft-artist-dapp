@@ -1,0 +1,132 @@
+<section class="upload-work">
+  <div class="container">
+    <div class="caption">
+      <h2>Upload your NFT</h2>
+      <!--<p>Upload your digital</p>-->
+    </div>
+
+    <p class="error" *ngIf="hasFormError">Please fill out the required fields!</p>
+    <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()" (keyup)="resetError()">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Item Name <span class="required">*</span></label>
+            <input type="text"
+                   class="form-control"
+                   formControlName="name"
+                   placeholder="e.g. Black Golden Ape">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Description <span class="required">*</span></label>
+            <input type="text"
+                   class="form-control"
+                   formControlName="description"
+                   placeholder="Short description...">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Price <span class="required">*</span></label>
+            <input type="text"
+                   class="form-control"
+                   formControlName="price"
+                   placeholder="e.g. 1.25">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>External Link</label>
+            <input type="text"
+                   class="form-control"
+                   formControlName="externalLink"
+                   placeholder="e.g. https://twitter.com/YourAccount">
+          </div>
+        </div>
+        <div class="col-lg-12 font-color-white slide__section">
+          <mat-slide-toggle
+            color="primary"
+            formControlName="isAuction"
+            class="example-margin">
+            Auction
+          </mat-slide-toggle>
+        </div>
+        <div class="col-lg-12 font-color-white slide__section">
+          <mat-slide-toggle
+            color="primary"
+            formControlName="rare"
+            class="example-margin">
+            Rare item
+          </mat-slide-toggle>
+        </div>
+        <div class="col-lg-12">
+          <label>Select Collection <span class="required">*</span></label>
+          <ul class="collection-list">
+            <li *ngFor="let collection of collections" (click)="setCollection(collection)">
+              <div type="checkbox"
+                   id="check1"
+                   class="checkbox-style"
+                   [ngClass]="{'checkbox-style-checked': collection.id === selectedCollectionId}"
+              ></div>
+              <label for="check1">
+                <i><img
+                  src="assets/images/library.svg"
+                  alt=""></i>
+                <span>{{ collection.name | titlecase }}</span>
+              </label>
+            </li>
+          </ul>
+        </div>
+        <div class="col-lg-12">
+          <div class="form-group">
+            <label class="d-block">Upload file <span class="required">*</span></label>
+            <input (input)="uploadFile($event)"
+                   type="file"
+                   id="preview-file"
+                   name="uploadFile"
+                   class="file-upload">
+            <label for="preview-file">
+              <i><img
+                src="assets/images/paperclip.svg"
+                alt=""></i>
+              <span>Select file</span>
+            </label>
+          </div>
+        </div>
+        <div class="col-lg-12"
+             *ngIf="loadingImage || (uploadedImage | async)"
+             [class.image__loading]="loadingImage">
+          <div class="image__upload">
+            <div class="image__preview">
+              <img *ngIf="uploadedImage | async as image"
+                   [src]="image"
+                   class="image__sample"
+                   alt="uploaded image">
+              <div class="image__bg" *ngIf="loadingImage"></div>
+            </div>
+            <div class="image__status">
+              <i *ngIf="loadingImage" class="las la-spinner"></i>
+              <i *ngIf="!loadingImage" class="las la-check"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12 text-center">
+          <button class="btn btn-primary">
+            Submit NFT
+            <i>
+              <img
+                src="assets/images/send.svg"
+                alt="">
+            </i>
+          </button>
+        </div>
+        <div class="col-lg-12 text-center text-note">
+          <br>
+          You will be asked to sign 2 transactions. The first one creates the NFT and the second one adds it to your
+          market for sale.
+        </div>
+      </div>
+    </form>
+  </div>
+</section>

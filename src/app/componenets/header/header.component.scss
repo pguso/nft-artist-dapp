@@ -1,0 +1,28 @@
+header {
+  background: #01021f;
+  padding: 24px 0;
+}
+header .navbar-brand {
+  padding: 0;
+  margin: 0;
+}
+
+header .navbar-nav .nav-item .nav-link {
+  font-size: 16px;
+  line-height: 21px;
+  color: #ecebfe;
+  padding: 10px;
+  margin: 0px 8px;
+}
+header .navbar-nav .nav-item .nav-link:hover{
+
+  background: linear-gradient(81.18deg, #383bfe -47.26%, #902cf2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+header .navbar-nav {
+  align-items: center;
+}
+header .navbar-nav .nav-item:last-child {
+  margin-left: 18px;
+}

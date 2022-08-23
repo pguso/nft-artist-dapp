@@ -1,0 +1,23 @@
+.card-product {
+  background: #020438;
+  border: 1px solid #2a263f;
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.card-product .media {
+  display: flex;
+}
+
+.card-product .media .media-body {
+  flex: 1;
+}
+
+.card-product .cardBody {
+  margin-top: 24px;
+}
+
+.card-product .btn {
+  height: 45px;
+  font-size: 14px;
+}

@@ -1,0 +1,77 @@
+<section class="hero-main">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="hero-text">
+          <div class="text-body">
+            <h1>Buy & sell rare combination of <span>great
+                                        NFTs</span></h1>
+            <p>Lorem ipsum dolor sit amet, consectetur
+              adipiscing elit. Accumsan tempor mi et nunc
+              non dolor nulla. Amet porttitor sed aliquam,
+              dictum magna pretium.</p>
+            <ul>
+              <li><a href="#" class="btn btn-primary"><span>
+                                                Explore Items <i><img
+                src="assets/images/akar-icons_arrow-right.svg"
+                alt=""></i> </span></a></li>
+              <li>
+                <a href="#" class="btn
+                                            btn-outline-primary"><span>rare
+                                                items <i><img
+                    src="assets/images/akar-icons_arrow-right.svg"
+                    alt=""></i></span></a>
+              </li>
+            </ul>
+          </div>
+          <h4>Awesome artwork</h4>
+          <div class="art-media">
+            <div class="media">
+              <div class="avatar"><img
+                src="assets/images/avatar.png" alt=""></div>
+              <div class="media-body">
+                <h5>Artist</h5>
+                <div class="name">Mahadi</div>
+              </div>
+            </div>
+            <div class="media">
+              <div class="avatar"><img
+                src="assets/images/logos_ethereum.svg"
+                alt=""></div>
+              <div class="media-body">
+                <h5>price</h5>
+                <div class="name">2.00 eth</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="newest-items-card" *ngIf="latestItem">
+          <div class="img-holder">
+            <img [src]="latestItem.image"
+                 alt=""
+                 class="img-fluid">
+            <span class="label">NEWEST ITEM</span>
+          </div>
+          <div class="info-box">
+            <div class="info-header">
+              <div class="media-body">
+                <h4>{{latestItem.name}}</h4>
+                <!--<div class="name">@username</div>-->
+              </div>
+            </div>
+            <div class="info-body">
+              <div class="media-body">
+                <span class="title">{{latestItem.price}} MATIC</span>
+              </div>
+              <img src="assets/images/icon-eth.svg" alt="">
+            </div>
+            <a href="#" class="btn btn-primary w-100">Buy
+              Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
