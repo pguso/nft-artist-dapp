@@ -8,6 +8,7 @@ import { HttpClient } from "@angular/common/http";
 import { Profile } from "../interfaces/profile";
 import { FormGroup } from "@angular/forms";
 import { Item } from "../interfaces/item";
+import { File } from "web3.storage";
 
 @Injectable({
   providedIn: 'root',
@@ -23,10 +24,12 @@ export class MarketService {
     let isItemCreated = false
     const createItem: CreateItem = this.helperService.mapFormToObject(uploadForm)
     const metaData = JSON.stringify(createItem)
+    const blob = new Blob([metaData], {type : 'application/json'})
+    const files = [new File([blob], 'metadata.json')]
 
     if (metaData) {
       try {
-        const url = await this.ipfs.upload(metaData)
+        const url = await this.ipfs.upload(files);
         console.log('meta url', url)
 
         isItemCreated = await this.createSale(url, createItem.price)
