@@ -1,0 +1,44 @@
+<app-items-slider title="Rare Items">
+</app-items-slider>
+
+<section class="our-artwork">
+  <div class="container">
+    <div class="caption">
+      <h2>Our Artworks</h2>
+    </div>
+    <app-filter></app-filter>
+    <div class="row">
+      <div class="col-lg-3 col-md-4 col-sm-6" *ngFor="let item of items">
+        <app-card [itemId]="item.tokenId"
+                  [image]="item.image"
+                  [name]="item.name"
+                  [description]="item.description"
+                  [price]="item.price"
+        ></app-card>
+      </div>
+    </div>
+    <div class="text-center cta">
+      <a href="#" class="btn btn-outline-primary">
+        <span>
+          <i>
+            <img
+              src="assets/images/akar-icons_arrow-right.svg"
+              class="rotate"
+              alt="">
+          </i>
+          Previous
+        </span>
+      </a>
+      <a href="#" class="btn btn-outline-primary">
+        <span>
+          Next
+          <i>
+            <img
+              src="assets/images/akar-icons_arrow-right.svg"
+              alt="">
+          </i>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>

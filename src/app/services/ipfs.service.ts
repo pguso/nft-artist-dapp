@@ -23,6 +23,8 @@ export class IpfsService {
       const rootCid = await client.put(data);
       const res = await client.get(rootCid);
       const files = await res.files();
+      console.log('files', files);
+      console.log('cid', files[0].cid)
 
       url = `${environment.ipfsPublicGatewayUrl}${files[0].cid}`
     } catch (error) {

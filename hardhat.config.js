@@ -17,5 +17,5 @@ module.exports = {
       accounts: [privatKey],
     },
   },
-  solidity: '0.8.4',
+  solidity: '0.8.7',
 }

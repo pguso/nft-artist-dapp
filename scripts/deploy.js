@@ -3,7 +3,12 @@ const fs = require('fs')
 
 async function main() {
   const NFTMarket = await hre.ethers.getContractFactory('Market')
-  const nftMarket = await NFTMarket.deploy()
+  const nftMarket = await NFTMarket.deploy([
+    'Texture',
+    'Sports',
+    'Art',
+    'Illustrations'
+  ])
   await nftMarket.deployed()
 
   // This solves the bug in Mumbai network where the contract address is not the real one

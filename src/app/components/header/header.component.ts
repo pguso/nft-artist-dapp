@@ -2,6 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { DOCUMENT } from "@angular/common";
 import { WalletService } from "../../services/wallet.service";
 
+// TODO: make website accessible without direct login, so users can look around without login
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',

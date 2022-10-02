@@ -5,6 +5,7 @@ import { FormGroup } from "@angular/forms";
 import { environment } from '../../environments/environment';
 import NFT from '../../../artifacts/contracts/NFT.sol/NFT.json'
 import Market from '../../../artifacts/contracts/Market.sol/Market.json'
+import { CreateItem } from '../interfaces/create-item';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,7 @@ export class HelperService {
     return new ethers.providers.Web3Provider(provider)
   }
 
-  public mapFormToObject(formInput: FormGroup): any {
+  public mapFormToObject(formInput: FormGroup): CreateItem {
     return {
       name: formInput.get('name')?.value,
       description: formInput.get('description')?.value,
@@ -33,7 +34,8 @@ export class HelperService {
       isAuction: formInput.get('isAuction')?.value,
       addToCollection: formInput.get('addToCollection')?.value,
       fileUrl: formInput.get('fileUrl')?.value,
-      rare: formInput.get('rare')?.value,
+      isRare: formInput.get('rare')?.value,
+      duration: formInput.get('duration')?.value,
     }
   }
 

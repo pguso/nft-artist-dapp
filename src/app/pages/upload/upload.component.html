@@ -8,7 +8,7 @@
     <p class="error" *ngIf="hasFormError">Please fill out the required fields!</p>
     <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()" (keyup)="resetError()">
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
           <div class="form-group">
             <label>Item Name <span class="required">*</span></label>
             <input type="text"
@@ -17,31 +17,46 @@
                    placeholder="e.g. Black Golden Ape">
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-12">
           <div class="form-group">
             <label>Description <span class="required">*</span></label>
-            <input type="text"
-                   class="form-control"
-                   formControlName="description"
-                   placeholder="Short description...">
+            <textarea type="text"
+                      class="form-control textarea"
+                      formControlName="description"
+                      placeholder="e.g. Description..."></textarea>
           </div>
         </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label>Price <span class="required">*</span></label>
-            <input type="text"
-                   class="form-control"
-                   formControlName="price"
-                   placeholder="e.g. 1.25">
-          </div>
-        </div>
-        <div class="col-md-6">
+        <div class="col-md-12">
           <div class="form-group">
             <label>External Link</label>
             <input type="text"
                    class="form-control"
                    formControlName="externalLink"
                    placeholder="e.g. https://twitter.com/YourAccount">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>
+              <ng-container *ngIf="uploadForm.get('isAuction')?.value">Minimum Price </ng-container>
+              <ng-container *ngIf="!uploadForm.get('isAuction')?.value">Price </ng-container>
+              <span class="required">*</span>
+            </label>
+            <input type="text"
+                   class="form-control"
+                   formControlName="price"
+                   placeholder="e.g. 1.25">
+          </div>
+        </div>
+        <div class="col-md-6" *ngIf="uploadForm.get('isAuction')?.value">
+          <div class="form-group">
+            <label>
+              Duration (hours) <span class="required">*</span>
+            </label>
+            <input type="text"
+                   class="form-control"
+                   formControlName="duration"
+                   placeholder="e.g. 300">
           </div>
         </div>
         <div class="col-lg-12 font-color-white slide__section">
@@ -55,7 +70,7 @@
         <div class="col-lg-12 font-color-white slide__section">
           <mat-slide-toggle
             color="primary"
-            formControlName="rare"
+            formControlName="isRare"
             class="example-margin">
             Rare item
           </mat-slide-toggle>
@@ -63,17 +78,17 @@
         <div class="col-lg-12">
           <label>Select Collection <span class="required">*</span></label>
           <ul class="collection-list">
-            <li *ngFor="let collection of collections" (click)="setCollection(collection)">
+            <li *ngFor="let collection of collections; let i = index" (click)="setCollection(i)">
               <div type="checkbox"
                    id="check1"
                    class="checkbox-style"
-                   [ngClass]="{'checkbox-style-checked': collection.id === selectedCollectionId}"
+                   [ngClass]="{'checkbox-style-checked': i === selectedCollectionId}"
               ></div>
               <label for="check1">
                 <i><img
                   src="assets/images/library.svg"
                   alt=""></i>
-                <span>{{ collection.name | titlecase }}</span>
+                <span>{{ collection | titlecase }}</span>
               </label>
             </li>
           </ul>

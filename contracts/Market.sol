@@ -1,19 +1,20 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 import "hardhat/console.sol";
 import "./NFT.sol";
+import "./Auction.sol";
 
-contract Market is ReentrancyGuard {
+contract Market is ReentrancyGuard, Ownable {
   using Counters for Counters.Counter;
   Counters.Counter private _itemIds;
   Counters.Counter private _itemsSold;
 
-  address payable owner;
   NFT tokenContract;
 
   struct MarketItem {
@@ -25,7 +26,14 @@ contract Market is ReentrancyGuard {
     uint256 price;
     bool sold;
     bool verified;
+    bool isRare;
+    bool isAuction;
+    address payable lastBidder;
+    uint collectionId;
   }
+
+  mapping(uint256 => Auction) _auctions;
+  string[] _collections;
 
   mapping(uint256 => MarketItem) private idToMarketItem;
 
@@ -36,7 +44,10 @@ contract Market is ReentrancyGuard {
     address seller,
     address owner,
     uint256 price,
-    bool sold
+    bool sold,
+    bool isRare,
+    bool isAuction,
+    address payable lastBidder
   );
 
   uint256 private allUnsoldItemsCount;
@@ -44,15 +55,21 @@ contract Market is ReentrancyGuard {
 
   mapping(address => string) private authorToProfile;
 
-  constructor() {
-    owner = payable(msg.sender);
+  constructor(string[] memory collections) {
+    for (uint i = 0; i < collections.length; i++) {
+      _collections.push(collections[i]);
+    }
   }
 
   function addItemToMarketplace(
     address nftContract,
     uint256 tokenId,
-    uint256 price
-  ) public nonReentrant {
+    uint256 price,
+    bool isRare,
+    bool isAuction,
+    uint duration,
+    uint256 collectionId
+  ) external nonReentrant onlyOwner {
     require(price > 0, "Price must be at least 1 wei");
 
     _itemIds.increment();
@@ -67,8 +84,20 @@ contract Market is ReentrancyGuard {
       payable(address(0)), // empty address because no one owns it at listing
       price,
       false,
-      false
+      false,
+      isRare,
+      isAuction,
+      payable(0),
+      collectionId
     );
+
+    if (isAuction) {
+      _auctions[itemId] = new Auction();
+      _auctions[itemId].start(
+        duration,
+        price
+      );
+    }
 
     // transfer ownership
     IERC721(nftContract).transferFrom(msg.sender, address(this), tokenId);
@@ -80,12 +109,45 @@ contract Market is ReentrancyGuard {
       msg.sender,
       address(0),
       price,
-      false
+      false,
+      isRare,
+      isAuction,
+      payable(0)
     );
   }
 
+  function bidOnAuction(uint256 itemId) external payable {
+    require(idToMarketItem[itemId].isAuction, "This item has no attached auction");
+
+    address highestBidder = _auctions[itemId].getHighestBidder();
+    uint256 highestBid = _auctions[itemId].getHighestBid();
+
+    if (highestBidder != address(0)) {
+      payable(highestBidder).transfer(highestBid);
+    }
+
+    _auctions[itemId].bid(msg.sender, msg.value);
+    idToMarketItem[itemId].price = msg.value;
+  }
+
+  function endAuctionAndTransferOwnership(address nftContract, uint itemId) external nonReentrant {
+    uint256 price = idToMarketItem[itemId].price;
+    uint256 tokenId = idToMarketItem[itemId].tokenId;
+
+    _auctions[itemId].end();
+
+    address highestBidder = _auctions[itemId].getHighestBidder();
+    if (highestBidder != address(0)) {
+      payable(idToMarketItem[itemId].seller).transfer(price);
+      IERC721(nftContract).transferFrom(address(this), highestBidder, tokenId);
+      idToMarketItem[itemId].owner = payable(highestBidder);
+      idToMarketItem[itemId].sold = true;
+      _itemsSold.increment();
+    }
+  }
+
   function sellItemAndTransferOwnership(address nftContract, uint256 itemId)
-  public
+  external
   payable
   nonReentrant
   {
@@ -104,7 +166,15 @@ contract Market is ReentrancyGuard {
     _itemsSold.increment();
   }
 
-  function getAllUnsoldItems() public view returns (MarketItem[] memory) {
+  function getAuctionEndTimestamp(uint itemId) external view returns(uint256) {
+    return _auctions[itemId].endAt();
+  }
+
+  function getAuctionBids(uint itemId) external view returns(Auction.TrackBid[] memory) {
+    return _auctions[itemId].getAllBids();
+  }
+
+  function getAllUnsoldItems() external view returns (MarketItem[] memory) {
     uint256 totalItemCount = _itemIds.current();
     uint256 unsoldItemCount = _itemIds.current() - _itemsSold.current();
     uint256 currentIndex = 0;
@@ -119,23 +189,35 @@ contract Market is ReentrancyGuard {
         currentIndex += 1;
       }
     }
+
+    return items;
+  }
+
+  function getOnlyRareItems() external view returns (MarketItem[] memory) {
+    uint256 totalItemCount = _itemIds.current();
+    uint256 unsoldItemCount = _itemIds.current() - _itemsSold.current();
+    uint256 currentIndex = 0;
+
+    MarketItem[] memory items = new MarketItem[](unsoldItemCount);
+    for (uint256 i = 0; i < totalItemCount; i++) {
+      if (idToMarketItem[i + 1].owner == address(0) && idToMarketItem[i + 1].isRare) {
+        uint256 currentId = i + 1;
+        // TODO remove file to unlock
+        MarketItem storage currentItem = idToMarketItem[currentId];
+        items[currentIndex] = currentItem;
+        currentIndex += 1;
+      }
+    }
+
     return items;
   }
 
   function getPurchasedItemsBySender()
-  public
+  external
   view
   returns (MarketItem[] memory)
   {
     return getItemsByOwnerOrSeller(true);
-  }
-
-  function getCreatedItemsBySender()
-  public
-  view
-  returns (MarketItem[] memory)
-  {
-    return getItemsByOwnerOrSeller(false);
   }
 
   function getItemsByOwnerOrSeller(bool isOwner)
@@ -183,7 +265,19 @@ contract Market is ReentrancyGuard {
     return matchingAddress;
   }
 
-  function getLatestItem() external view returns(MarketItem memory) {
+  function getLatestItem() external view returns (MarketItem memory) {
     return idToMarketItem[latestItemId];
+  }
+
+  function getItemById(uint itemId) external view returns (MarketItem memory) {
+    return idToMarketItem[itemId];
+  }
+
+  function getCollections() external view returns(string[] memory) {
+    return _collections;
+  }
+
+  function getCollectionById(uint id) external view returns(string memory) {
+    return _collections[id];
   }
 }

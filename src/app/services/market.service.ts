@@ -9,6 +9,7 @@ import { Profile } from "../interfaces/profile";
 import { FormGroup } from "@angular/forms";
 import { Item } from "../interfaces/item";
 import { File } from "web3.storage";
+import { min } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -18,21 +19,31 @@ export class MarketService {
     private helperService: HelperService,
     private ipfs: IpfsService,
     private http: HttpClient
-  ) {}
+  ) {
+  }
 
   public async addItem(uploadForm: FormGroup): Promise<boolean> {
     let isItemCreated = false
     const createItem: CreateItem = this.helperService.mapFormToObject(uploadForm)
     const metaData = JSON.stringify(createItem)
-    const blob = new Blob([metaData], {type : 'application/json'})
+    const blob = new Blob([metaData], {type: 'application/json'})
     const files = [new File([blob], 'metadata.json')]
+    console.log('createItem', createItem)
 
     if (metaData) {
       try {
         const url = await this.ipfs.upload(files);
         console.log('meta url', url)
 
-        isItemCreated = await this.createSale(url, createItem.price)
+        // TODO variable duration
+        isItemCreated = await this.createSale(
+          url,
+          createItem.price,
+          createItem.isRare,
+          createItem.isAuction,
+          createItem.addToCollection,
+          createItem.duration
+        )
       } catch (error) {
         console.log('Error uploading file: ', error)
       }
@@ -41,7 +52,14 @@ export class MarketService {
     return isItemCreated
   }
 
-  public async createSale(url: string, inputPrice: string): Promise<boolean> {
+  public async createSale(
+    url: string,
+    inputPrice: string,
+    isRare: boolean,
+    isAuction: boolean,
+    collectionId: number,
+    duration = 0,
+  ): Promise<boolean> {
     const tokenId = await this.createToken(url)
     const price = ethers.utils.parseUnits(inputPrice, 'ether')
     const marketContract = await this.helperService.getMarketContract(true)
@@ -50,6 +68,10 @@ export class MarketService {
       environment.nftAddress,
       tokenId,
       price,
+      isRare,
+      isAuction,
+      duration,
+      collectionId
     )
     const tx = await addItemToMarketplaceTransaction.wait()
 
@@ -77,9 +99,9 @@ export class MarketService {
         const meta: any = await this.http.get(tokenUri).toPromise()
         let price = ethers.utils.formatEther(item.price.toString())
 
-        const { preview, description, name, externalLink } = meta;
+        const {fileUrl, description, name, externalLink} = meta
         return MarketService.createItem(
-          price, item, preview, name, description, externalLink
+          price, item, fileUrl, name, description, externalLink
         )
       }),
     )
@@ -90,11 +112,15 @@ export class MarketService {
     const marketContract = await this.helperService.getMarketContract()
     const latestItem = await marketContract['getLatestItem']()
 
+    if (latestItem.tokenId) {
+      console.log('latestItem.tokenId', latestItem.tokenId);
+    }
+
     const tokenUri = await tokenContract['tokenURI'](latestItem.tokenId)
     const meta: any = await this.http.get(tokenUri).toPromise()
     let price = ethers.utils.formatEther(latestItem.price.toString())
 
-    const { fileUrl, description, name, externalLink } = meta
+    const {fileUrl, description, name, externalLink} = meta
     return MarketService.createItem(
       price, latestItem, fileUrl, name, description, externalLink
     )
@@ -129,15 +155,78 @@ export class MarketService {
     externalLink: string
   ): Item {
     return {
+      itemId: Number(item.itemId),
       price,
       tokenId: Number(item.tokenId),
       seller: String(item.seller),
       owner: String(item.owner),
+      sold: Boolean(item.sold),
+      isRare: Boolean(item.isRare),
+      isAuction: Boolean(item.isAuction),
+      lastBidder: String(item.lastBidder),
+      collectionId: Number(item.collectionId),
       // TODO save preview with reduced quality to property preview
       image,
       name,
       description,
       externalLink,
     }
+  }
+
+  public async getItemById(itemId: number) {
+    const tokenContract = await this.helperService.getTokenContract()
+    const marketContract = await this.helperService.getMarketContract()
+
+    const item = await marketContract['getItemById'](itemId);
+    console.log('get item', item);
+
+    const tokenUri = await tokenContract['tokenURI'](item.tokenId)
+    const meta: any = await this.http.get(tokenUri).toPromise()
+    let price = ethers.utils.formatEther(item.price.toString())
+
+    const {fileUrl, description, name, externalLink} = meta
+    return MarketService.createItem(
+      price, item, fileUrl, name, description, externalLink
+    )
+  }
+
+  public async getAuctionBids(itemId: number) {
+    const marketContract = await this.helperService.getMarketContract()
+
+    const bids = await marketContract['getAuctionBids'](itemId);
+    console.log('auction bids', bids);
+
+    return bids;
+  }
+
+  public async getAuctionEndTime(itemId: number) {
+    const marketContract = await this.helperService.getMarketContract()
+
+    const end = Number(await marketContract['getAuctionEndTimestamp'](itemId));
+    const endDate = new Date(end * 1000);
+    console.log('auction end', endDate);
+    console.log('auction diff time', MarketService.convertTime(endDate));
+
+    return MarketService.convertTime(endDate);
+  }
+
+  private static convertTime(dateFuture: Date) {
+    const now = new Date();
+    // @ts-ignore
+    let seconds = Math.floor((dateFuture - (now)) / 1000);
+    let minutes = Math.floor(seconds / 60);
+    let hours = Math.floor(minutes / 60);
+    let days = Math.floor(hours / 24);
+
+    hours = hours - (days * 24);
+    minutes = minutes - (days * 24 * 60) - (hours * 60);
+    seconds = seconds - (days * 24 * 60 * 60) - (hours * 60 * 60) - (minutes * 60);
+
+    return {
+      days,
+      hours,
+      minutes,
+      seconds
+    };
   }
 }

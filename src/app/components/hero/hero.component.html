@@ -4,23 +4,36 @@
       <div class="col-lg-6">
         <div class="hero-text">
           <div class="text-body">
-            <h1>Buy & sell rare combination of <span>great
-                                        NFTs</span></h1>
+            <h1>Buy & sell rare combination of
+              <span>great NFTs</span>
+            </h1>
             <p>Lorem ipsum dolor sit amet, consectetur
               adipiscing elit. Accumsan tempor mi et nunc
               non dolor nulla. Amet porttitor sed aliquam,
               dictum magna pretium.</p>
             <ul>
-              <li><a href="#" class="btn btn-primary"><span>
-                                                Explore Items <i><img
-                src="assets/images/akar-icons_arrow-right.svg"
-                alt=""></i> </span></a></li>
               <li>
-                <a href="#" class="btn
-                                            btn-outline-primary"><span>rare
-                                                items <i><img
-                    src="assets/images/akar-icons_arrow-right.svg"
-                    alt=""></i></span></a>
+                <a href="#" class="btn btn-primary">
+                  <span>
+                    Explore Items
+                    <i>
+                      <img
+                        src="assets/images/akar-icons_arrow-right.svg"
+                        alt="">
+                    </i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="btn btn-outline-primary">
+                  <span>rare items
+                    <i>
+                      <img
+                        src="assets/images/akar-icons_arrow-right.svg"
+                        alt="">
+                    </i>
+                  </span>
+                </a>
               </li>
             </ul>
           </div>
@@ -28,19 +41,19 @@
           <div class="art-media">
             <div class="media">
               <div class="avatar"><img
-                src="assets/images/avatar.png" alt=""></div>
+                src="assets/images/avataaars.png" alt=""></div>
               <div class="media-body">
                 <h5>Artist</h5>
-                <div class="name">Mahadi</div>
+                <div class="name">Patric</div>
               </div>
             </div>
             <div class="media">
-              <div class="avatar"><img
-                src="assets/images/logos_ethereum.svg"
+              <div class="avatar coin"><img
+                src="assets/images/coin.png"
                 alt=""></div>
               <div class="media-body">
-                <h5>price</h5>
-                <div class="name">2.00 eth</div>
+                <h5>collected</h5>
+                <div class="name">200 MATIC</div>
               </div>
             </div>
           </div>
@@ -63,9 +76,9 @@
             </div>
             <div class="info-body">
               <div class="media-body">
-                <span class="title">{{latestItem.price}} MATIC</span>
+                <span class="title">{{latestItem.price | number: '1.2-2'}} MATIC</span>
               </div>
-              <img src="assets/images/icon-eth.svg" alt="">
+              <img src="assets/images/coin.png" alt="" class="large-coin">
             </div>
             <a href="#" class="btn btn-primary w-100">Buy
               Now</a>

@@ -31,17 +31,21 @@
   font-size: 16px;
   line-height: 24px;
   color: #ffffff;
-  margin-bottom: 8px;
+  margin-bottom: .8rem;
 }
 
 .upload-work form .form-control {
-  height: 52px;
+  min-height: 52px;
   background: #2a263f;
   border-radius: 8px;
   border: 1px solid #2a263f;
   color: #ffffff;
   position: relative;
   z-index: 5;
+}
+
+.upload-work form .form-control.textarea {
+  min-height: 8rem;
 }
 
 .upload-work form .form-control:focus {

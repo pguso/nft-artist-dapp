@@ -4,7 +4,8 @@ export interface CreateItem {
   price: string;
   externalLink: string;
   isAuction: boolean;
-  addToCollection: string;
+  addToCollection: number;
   fileUrl: string;
-  rare: boolean;
+  isRare: boolean;
+  duration: number;
 }

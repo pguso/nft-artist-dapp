@@ -3,10 +3,9 @@ import { FormBuilder, Validators } from "@angular/forms";
 import { DOCUMENT } from "@angular/common";
 import { HelperService } from "../../services/helper.service";
 import { Router } from "@angular/router";
-import { environment } from "../../../environments/environment";
 import { IpfsService } from "../../services/ipfs.service";
 import { MarketService } from "../../services/market.service";
-import { Collection } from "../../interfaces/collection";
+import { CollectionService } from '../../services/collection.service';
 
 @Component({
   selector: 'app-upload',
@@ -22,12 +21,13 @@ export class UploadComponent implements OnInit {
     isAuction: this.fb.control(false),
     addToCollection: this.fb.control('', Validators.required),
     fileUrl: this.fb.control('', Validators.required),
-    rare: this.fb.control(false),
+    isRare: this.fb.control(false),
+    duration: this.fb.control(0),
     // fileOnUnlock: this.fb.control(''),
   })
   public hasFormError = false
-  public collections: Collection[] = []
-  public selectedCollectionId = 0
+  public collections: string[] = []
+  public selectedCollectionId = -1
   public uploadedImage: Promise<string> = new Promise<string>(() => undefined);
   public loadingImage = false
 
@@ -38,15 +38,16 @@ export class UploadComponent implements OnInit {
     private router: Router,
     private ipfs: IpfsService,
     private market: MarketService,
+    private collectionService: CollectionService
   ) { }
 
-  ngOnInit(): void {
-    this.collections = environment.categories
+  async ngOnInit(): Promise<void> {
+    this.collections = await this.collectionService.getCollections()
   }
 
-  public setCollection(collection: Collection): void {
-    this.setField('addToCollection', collection.id)
-    this.selectedCollectionId = collection.id
+  public setCollection(collectionId: number): void {
+    this.setField('addToCollection', collectionId)
+    this.selectedCollectionId = collectionId
   }
 
   private setField(fieldName: string, fieldValue: any): void {

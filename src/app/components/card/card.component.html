@@ -1,0 +1,27 @@
+<div class="card-product" [routerLink]="['details', itemId]" >
+  <div class="img-title">
+    <img [src]="image"
+         alt=""
+         class="w-100">
+  </div>
+  <div class="cardBody">
+    <div class="media">
+      <div class="media-body">
+        <h4>{{name}}</h4>
+        <div class="name">@pguso</div>
+      </div>
+    </div>
+    <div class="info-body">
+      <div class="media-body">
+        <span class="title">{{price | number: '1.2-2'}} MATIC</span>
+      </div>
+      <img src="assets/images/coin.png"
+           alt="">
+    </div>
+  </div>
+  <app-button [isRound]="true"
+              [textBold]="false"
+              label="Buy Now"
+              class="buy-button">
+  </app-button>
+</div>

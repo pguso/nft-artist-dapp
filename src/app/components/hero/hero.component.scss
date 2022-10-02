@@ -94,8 +94,17 @@
   align-items: center;
   justify-content: center;
   margin-right: 18px;
-  background: #ffffff;
   border-radius: 50%;
+
+  img {
+    width: 45px;
+  }
+
+  &.coin {
+    img {
+      width: 37px;
+    }
+  }
 }
 
 .art-media .media .media-body h5 {
@@ -175,4 +184,8 @@
 
 .newest-items-card .info-box .info-header .media-body {
   flex: 1;
+}
+
+.large-coin {
+  width: 1.8rem;
 }

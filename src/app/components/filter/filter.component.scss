@@ -1,0 +1,33 @@
+.tabs-filter {
+  display: flex;
+  align-items: center;
+  margin: 0 -8px;
+}
+
+.tabs-filter li {
+  padding: 0 8px;
+}
+
+.tabs-filter li a {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px;
+  border-radius: 16px;
+}
+
+.tabs-filter li a span {
+  display: inline-flex;
+  align-items: center;
+  background: #2a263f;
+  border: 1px solid #2a263f;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1;
+  color: #ffffff;
+  padding: 8px 16px;
+}
+
+.tabs-filter li a:hover,
+.tabs-filter li a.active {
+  background: linear-gradient(81.18deg, #383bfe -47.26%, #902cf2 100%);
+}

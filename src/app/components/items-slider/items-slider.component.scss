@@ -1,0 +1,73 @@
+.sportscast {
+  background: #01021f;
+  padding: 60px 0;
+
+  h4 {
+    font-family: "DM Sans", sans-serif;
+    color: #fff;
+    font-weight: 400;
+    font-size: 24px;
+  }
+
+  .control {
+    .swiper-button-next {
+      position: relative;
+      bottom: 0;
+      right: 0;
+      margin: 0;
+      left: 0;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.7;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+    }
+
+    .swiper-button-prev {
+      position: relative;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.7;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      margin-right: 1.5rem;
+    }
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    [class*="swiper-button"] {
+      &:hover {
+        background: linear-gradient(81.18deg, #383bfe -47.26%, #902cf2 100%);
+        border: transparent;
+        opacity: 1;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.swiper {
+  .row {
+    margin-top: 2rem;
+  }
+}
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+  content: none;
+}
+
+.swiper-button-next svg {
+  transform: rotate(180deg);
+}

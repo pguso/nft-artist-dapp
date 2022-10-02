@@ -26,6 +26,7 @@
     "@metamask/detect-provider": "^1.2.0",
     "cookie-alert-demo": "github:andychiare/cookie-alert-demo",
     "ipfs-http-client": "^54.0.2",
+    "ng-apexcharts": "^1.7.1",
     "rxjs": "~7.4.0",
     "tslib": "^2.3.0",
     "web3.storage": "^4.3.0",

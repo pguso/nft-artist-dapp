@@ -17,7 +17,12 @@ export class HeroComponent implements OnInit {
   }
 
   async showLatestItem() {
-    this.latestItem =  await this.market.getLatestItem()
+    try {
+      this.latestItem =  await this.market.getLatestItem()
+    } catch (e) {
+      console.error(e);
+    }
+    console.log('latestItem', this.latestItem);
   }
 
 }

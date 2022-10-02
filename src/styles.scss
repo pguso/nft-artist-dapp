@@ -1,5 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600&family=PT+Sans:wght@400;700&display=swap');
 
 body {
   font-family: "DM Sans", sans-serif;
@@ -45,7 +47,6 @@ a:hover {
 }
 
 .btn-primary:hover {
-
   background: linear-gradient(81.18deg, #902cf2 -47.26%, #383bfe 100%);
 }
 

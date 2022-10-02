@@ -1,0 +1,169 @@
+.info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  margin-top: 2rem;
+  color: #fff;
+  font-family: 'PT Sans', sans-serif;
+  margin-bottom: 6rem;
+
+  .image {
+    width: 100%;
+    border-radius: 16px;
+  }
+
+  .meta-data {
+    padding-left: 2rem;
+
+    .actions {
+      display: grid;
+      grid-template-columns: 8fr 1fr 1fr;
+      align-items: center;
+      margin-bottom: 32px;
+
+      span {
+        color: #969696;
+        font-size: 0.875rem;
+      }
+
+      app-button {
+        justify-self: end;
+      }
+    }
+
+    .bidding {
+      background: rgba(2, 4, 56, 0.75);
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 2rem;
+
+      .overview {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+
+        h4 {
+          font-size: 1rem;
+          color: #CECCD6;
+          font-family: 'Epilogue', sans-serif;
+          font-weight: 500;
+        }
+
+        span {
+          font-size: 1.75rem;
+        }
+      }
+
+      .buy-button {
+        display: block;
+        width: 100%;
+        height: 42px;
+        font-family: 'Epilogue', sans-serif;
+        font-weight: 600;
+      }
+    }
+
+    .description {
+      font-family: 'Epilogue', sans-serif;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 16px;
+      color: #c4c4c4;
+      line-height: 170%;
+    }
+  }
+}
+
+.history {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 1.5rem;
+  color: #fff;
+  font-family: 'Epilogue', sans-serif;
+
+  .box {
+    background: rgba(2, 4, 56, 0.75);
+    border-radius: 16px;
+    min-height: 3rem;
+    padding: 2rem 2rem 0 2rem;
+
+    h6 {
+      font-style: normal;
+      font-weight: 500;
+      font-size: 20px;
+      line-height: 160%;
+      border-bottom: 1px solid #393556;
+      padding-bottom: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    &.price {
+      .sub-title {
+        font-weight: 500;
+        font-size: 1rem;
+        line-height: 160%;
+        color: #9C99AE;
+      }
+
+      .bid {
+        font-weight: 700;
+        font-size: 24px;
+        line-height: 120%;
+        padding-right: .5rem;
+      }
+
+      .change {
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 160%;
+        text-align: center;
+        color: #27D1AA;
+      }
+    }
+
+    &.bids {
+      .sub-title {
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 160%;
+        padding-bottom: .7rem;
+      }
+
+      .table {
+        .row {
+          display: grid;
+          grid-template-columns: 1fr 2fr 3fr;
+          margin: 0;
+          gap: .5rem;
+
+          > div {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+
+        .header {
+          font-weight: 400;
+          font-size: 16px;
+          line-height: 160%;
+          color: #9C99AE;
+          padding-bottom: 1rem;
+        }
+
+        .body {
+          font-weight: 400;
+          font-size: 16px;
+          line-height: 160%;
+          color: #fff;
+          max-height: 20rem;
+          overflow-y: scroll;
+
+          .row {
+            padding-bottom: 1rem;
+          }
+        }
+      }
+    }
+  }
+}

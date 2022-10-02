@@ -1,8 +1,13 @@
 .card-product {
   background: #020438;
-  border: 1px solid #2a263f;
+  border: 2px solid transparent;
   border-radius: 16px;
   padding: 16px;
+  cursor: pointer;
+
+  &:hover {
+    border: 2px solid #36315a;
+  }
 }
 
 .card-product .media {
@@ -20,4 +25,10 @@
 .card-product .btn {
   height: 45px;
   font-size: 14px;
+}
+
+.info-body {
+  img {
+    width: 1.5rem;
+  }
 }
