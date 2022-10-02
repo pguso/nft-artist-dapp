@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  nftAddress: '0xf08700eBf342De7186d6680F89129d57BfB745F3',
-  marketAddress: '0xCBdC70C5b0AdCC9DA93965114703568732788Ef6',
+  nftAddress: '0x1b6909eA884FF58F4a2b3A63ca02E5B9c3DcdFCe',
+  marketAddress: '0x5A3a6a57496064F12B2f8D79c3A15e4C6bB9e0C5',
   ipfsPublicGatewayUrl: 'https://ipfs.io/ipfs/',
   web3storageApiToken: 'YOUR_API_TOKEN', // Get the token from here https://web3.storage/login/
   categories: [
