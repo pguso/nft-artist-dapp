@@ -20,9 +20,8 @@ export class HeroComponent implements OnInit {
     try {
       this.latestItem =  await this.market.getLatestItem()
     } catch (e) {
-      console.error(e);
+      console.error('Could not get the latest item from the market.');
     }
     console.log('latestItem', this.latestItem);
   }
-
 }

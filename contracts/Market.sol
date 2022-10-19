@@ -14,6 +14,7 @@ contract Market is ReentrancyGuard, Ownable {
   using Counters for Counters.Counter;
   Counters.Counter private _itemIds;
   Counters.Counter private _itemsSold;
+  uint public amountCollected;
 
   NFT tokenContract;
 
@@ -138,6 +139,7 @@ contract Market is ReentrancyGuard, Ownable {
 
     address highestBidder = _auctions[itemId].getHighestBidder();
     if (highestBidder != address(0)) {
+      amountCollected += price;
       payable(idToMarketItem[itemId].seller).transfer(price);
       IERC721(nftContract).transferFrom(address(this), highestBidder, tokenId);
       idToMarketItem[itemId].owner = payable(highestBidder);
@@ -164,6 +166,7 @@ contract Market is ReentrancyGuard, Ownable {
     idToMarketItem[itemId].owner = payable(msg.sender);
     idToMarketItem[itemId].sold = true;
     _itemsSold.increment();
+    amountCollected += price;
   }
 
   function getAuctionEndTimestamp(uint itemId) external view returns(uint256) {
@@ -185,6 +188,7 @@ contract Market is ReentrancyGuard, Ownable {
         uint256 currentId = i + 1;
         // TODO remove file to unlock
         MarketItem storage currentItem = idToMarketItem[currentId];
+        // TODO dont add items where auction is ended
         items[currentIndex] = currentItem;
         currentIndex += 1;
       }
@@ -204,6 +208,7 @@ contract Market is ReentrancyGuard, Ownable {
         uint256 currentId = i + 1;
         // TODO remove file to unlock
         MarketItem storage currentItem = idToMarketItem[currentId];
+        // TODO dont add items where auction is ended
         items[currentIndex] = currentItem;
         currentIndex += 1;
       }
@@ -279,5 +284,9 @@ contract Market is ReentrancyGuard, Ownable {
 
   function getCollectionById(uint id) external view returns(string memory) {
     return _collections[id];
+  }
+
+  function hasItems() external view returns(bool) {
+    return _itemIds.current() > 0;
   }
 }

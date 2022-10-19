@@ -57,7 +57,7 @@ export class UploadComponent implements OnInit {
   public async uploadFile(event: any): Promise<void> {
     this.uploadedImage = new Promise(() => null);
     this.loadingImage = true
-    const uploadedImage = await this.ipfs.upload(event.target.files)
+    const uploadedImage = await this.ipfs.uploadFile(event.target.files[0])
     this.setField('fileUrl', uploadedImage)
     this.loadingImage = false
 

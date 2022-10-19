@@ -14,6 +14,12 @@ button {
   color: #fff;
   font-weight: 400;
 
+  &:disabled,
+  &[disabled] {
+    pointer-events: none;
+    background: #5b5b5b !important;
+  }
+
   &:hover {
     background: #7f29d4;
   }

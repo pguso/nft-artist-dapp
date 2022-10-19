@@ -9,7 +9,6 @@ import { Profile } from "../interfaces/profile";
 import { FormGroup } from "@angular/forms";
 import { Item } from "../interfaces/item";
 import { File } from "web3.storage";
-import { min } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -32,7 +31,7 @@ export class MarketService {
 
     if (metaData) {
       try {
-        const url = await this.ipfs.upload(files);
+        const url = await this.ipfs.uploadFile(files[0]);
         console.log('meta url', url)
 
         // TODO variable duration
@@ -61,7 +60,7 @@ export class MarketService {
     duration = 0,
   ): Promise<boolean> {
     const tokenId = await this.createToken(url)
-    const price = ethers.utils.parseUnits(inputPrice, 'ether')
+    const price = ethers.utils.parseUnits(inputPrice.replace(',', '.'), 'ether')
     const marketContract = await this.helperService.getMarketContract(true)
 
     const addItemToMarketplaceTransaction = await marketContract['addItemToMarketplace'](
@@ -95,6 +94,7 @@ export class MarketService {
 
     return await Promise.all(
       unsoldItems.map(async (item: any) => {
+        console.log('item.tokenId', Number(item.tokenId))
         const tokenUri = await tokenContract['tokenURI'](item.tokenId)
         const meta: any = await this.http.get(tokenUri).toPromise()
         let price = ethers.utils.formatEther(item.price.toString())
@@ -178,8 +178,6 @@ export class MarketService {
     const marketContract = await this.helperService.getMarketContract()
 
     const item = await marketContract['getItemById'](itemId);
-    console.log('get item', item);
-
     const tokenUri = await tokenContract['tokenURI'](item.tokenId)
     const meta: any = await this.http.get(tokenUri).toPromise()
     let price = ethers.utils.formatEther(item.price.toString())
@@ -193,21 +191,21 @@ export class MarketService {
   public async getAuctionBids(itemId: number) {
     const marketContract = await this.helperService.getMarketContract()
 
-    const bids = await marketContract['getAuctionBids'](itemId);
-    console.log('auction bids', bids);
-
-    return bids;
+    return await marketContract['getAuctionBids'](itemId);
   }
 
   public async getAuctionEndTime(itemId: number) {
     const marketContract = await this.helperService.getMarketContract()
-
     const end = Number(await marketContract['getAuctionEndTimestamp'](itemId));
     const endDate = new Date(end * 1000);
-    console.log('auction end', endDate);
-    console.log('auction diff time', MarketService.convertTime(endDate));
 
     return MarketService.convertTime(endDate);
+  }
+
+  public async hasItems() {
+    const marketContract = await this.helperService.getMarketContract()
+
+    return await marketContract['hasItems']();
   }
 
   private static convertTime(dateFuture: Date) {
@@ -228,5 +226,18 @@ export class MarketService {
       minutes,
       seconds
     };
+  }
+
+  public async bidOnAuction(itemId: number, bid: number) {
+    const marketContract = await this.helperService.getMarketContract(true)
+    const bidOnAuctionTransaction = await marketContract['bidOnAuction'](
+      itemId,
+      {
+        value: ethers.utils.parseUnits(bid.toString()),
+      },
+    );
+    const tx = await bidOnAuctionTransaction.wait()
+
+    return tx.status === 1
   }
 }

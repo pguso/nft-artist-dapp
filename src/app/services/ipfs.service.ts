@@ -1,36 +1,35 @@
 import { Injectable } from '@angular/core';
 import { environment } from "../../environments/environment";
-import { Web3Storage } from 'web3.storage';
+import { NFTStorage, File } from 'nft.storage'
 
 @Injectable({
   providedIn: 'root'
 })
 export class IpfsService {
-  public getClient(): any {
-    // @ts-ignore
-    return new Web3Storage({ token: environment.web3storageApiToken })
+  public getClient(): NFTStorage {
+    return new NFTStorage({ token: environment.nftStorageApiToken })
   }
 
   public async uploadFile(file: File): Promise<string> {
-    return this.upload(file);
-  }
-
-  public async upload(data: any): Promise<string> {
+    console.dir(file)
     let url = '';
     const client = this.getClient()
+    console.dir(client)
 
     try {
-      const rootCid = await client.put(data);
-      const res = await client.get(rootCid);
-      const files = await res.files();
-      console.log('files', files);
-      console.log('cid', files[0].cid)
-
-      url = `${environment.ipfsPublicGatewayUrl}${files[0].cid}`
-    } catch (error) {
-      console.log(error)
+      const metadata = await client.store({
+        image: file,
+        name: '',
+        description: ''
+      })
+      console.log('metadata', metadata)
+      const res = metadata.embed() as any;
+      console.log('res', res)
+      url = `${environment.ipfsPublicGatewayUrl}${res.image.pathname}`;
+    } catch (e) {
+      console.error(e);
     }
 
-    return url
+    return url;
   }
 }

@@ -25,6 +25,13 @@ export class HelperService {
     return new ethers.providers.Web3Provider(provider)
   }
 
+  public async getBalance() {
+    const provider = await this.getWebProvider();
+    const address = String(await this.getWebProvider(true, true));
+
+    return await provider.getBalance(address);
+  }
+
   public mapFormToObject(formInput: FormGroup): CreateItem {
     return {
       name: formInput.get('name')?.value,

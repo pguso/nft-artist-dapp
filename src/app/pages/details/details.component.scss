@@ -28,6 +28,10 @@
 
       app-button {
         justify-self: end;
+
+        &:first-of-type {
+          margin-right: .5rem;
+        }
       }
     }
 

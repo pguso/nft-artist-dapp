@@ -4,10 +4,11 @@
 
 export const environment = {
   production: false,
-  nftAddress: '0x1b6909eA884FF58F4a2b3A63ca02E5B9c3DcdFCe',
-  marketAddress: '0x5A3a6a57496064F12B2f8D79c3A15e4C6bB9e0C5',
-  ipfsPublicGatewayUrl: 'https://ipfs.io/ipfs/',
-  web3storageApiToken: 'YOUR_API_TOKEN', // Get the token from here https://web3.storage/login/
+  nftAddress: '0x420BE3C2eC4e10eA3Bfff9D3331952757BE48BF6',
+  marketAddress: '0xdaBc5279C92CBc92961672C5a4462d135a6862B6',
+  ipfsPublicGatewayUrl: 'https://ipfs.io/',
+  web3storageApiToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDREQTIyMDZkOTE0OTlhYWUyNkJFRTUzRGMxMjBFQzA2NTBENTUyQzYiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NjExNTI3NjQxMTEsIm5hbWUiOiJORlQgYXJ0aXN0IHdlYnNpdGUifQ.CUs5Nz5KsJrPHUP1hsUYascVTJl-EGiyORLbDlKVhRs', // Get the token from here https://web3.storage/login/
+  nftStorageApiToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweENjZjAyQUVhNzE3MzFENDhGMzdCMUQwMDQ3NTkxNThBZmE1RDdlNTAiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY2NTQwMTgwNTA4NywibmFtZSI6Ik5GVCBBcnRpc3RzIn0.TYBWjIjUT7wm5pt1yXNeTg4s0AhaWTxnctOpGTZM_n0',
   categories: [
     {
       id: 1,

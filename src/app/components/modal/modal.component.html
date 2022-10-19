@@ -1,0 +1,48 @@
+<ng-container *ngIf="showModal$ | async as showModal">
+  <section [class.open]="showModal"
+           (click)="close()">
+    <div (click)="$event.stopPropagation()">
+      <button class="close"
+              type="button"
+              (click)="close()">x</button>
+
+      <h3>Place a bid</h3>
+      <p>You must bid at least {{minBid | number: '1.2-2'}} MATIC</p>
+
+      <p *ngIf="error" class="error">{{error}}</p>
+
+      <input type="number"
+             [class.error]="bidControl.errors?.['min'] || bidControl.errors?.['max']"
+             [min]="minBid"
+             [max]="formattedWalletBalance"
+             [(ngModel)]="bid"
+             [formControl]="bidControl">
+      <div *ngIf="bidControl.invalid && (bidControl.dirty || bidControl.touched)"
+           class="alert">
+        <div *ngIf="bidControl.errors?.['min']">
+        Bid must be higher then {{minBid | number: '1.2-2'}}
+        </div>
+        <div *ngIf="bidControl.errors?.['max']">
+        Bid cannot exceed your actual balance
+        </div>
+
+      </div>
+
+      <div class="details">
+        <div>
+          <span>Your Balance</span>
+          <span>{{formattedWalletBalance | number: '1.2-2'}} MATIC</span>
+        </div>
+        <div>
+          <span>Your will pay (+ gas fees)</span>
+          <span>{{bid | number: '1.2-2'}} MATIC</span>
+        </div>
+      </div>
+
+      <app-button label="Bid now"
+                  [isRound]="true"
+                  (click)="addBid()"
+                  [disabled]="bidControl.errors?.['min'] || bidControl.errors?.['max']"></app-button>
+    </div>
+  </section>
+</ng-container>

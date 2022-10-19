@@ -20,6 +20,7 @@ import { ButtonComponent } from './components/button/button.component';
 import { ItemsSliderComponent } from './components/items-slider/items-slider.component';
 import { FilterComponent } from './components/filter/filter.component';
 import { NgApexchartsModule } from "ng-apexcharts";
+import { ModalComponent } from './components/modal/modal.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { NgApexchartsModule } from "ng-apexcharts";
     ButtonComponent,
     ItemsSliderComponent,
     FilterComponent,
+    ModalComponent,
   ],
   imports: [
     BrowserModule,

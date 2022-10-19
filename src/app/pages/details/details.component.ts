@@ -1,19 +1,21 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {
-  ChartComponent,
   ApexAxisChartSeries,
   ApexChart,
-  ApexXAxis,
   ApexDataLabels,
-  ApexStroke,
-  ApexYAxis,
-  ApexTitleSubtitle,
   ApexLegend,
-  ApexTheme
+  ApexStroke,
+  ApexTheme,
+  ApexTitleSubtitle,
+  ApexXAxis,
+  ApexYAxis,
+  ChartComponent
 } from "ng-apexcharts";
 import { ActivatedRoute } from '@angular/router';
 import { MarketService } from '../../services/market.service';
 import { Item } from '../../interfaces/item';
+import { ModalService } from "../../services/modal.service";
+import { ethers } from "ethers";
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -35,7 +37,7 @@ export type ChartOptions = {
 @Component({
   selector: 'app-details',
   templateUrl: './details.component.html',
-  styleUrls: ['./details.component.scss']
+  styleUrls: [ './details.component.scss' ]
 })
 export class DetailsComponent implements OnInit {
   @ViewChild("chart") chart: ChartComponent | undefined;
@@ -47,19 +49,103 @@ export class DetailsComponent implements OnInit {
     minutes: number,
     seconds: number
   } | undefined;
-  public bids: any[] = [];
+  public bids: Array<{
+    timeAgo: string,
+    timeFormat: string,
+    bidder: string,
+    bid: number
+  }> = [];
+  public bidTransactionError = '';
+  public auctionEnded = true;
+  public bidPercentageChange = 0;
 
-  private id: number | undefined;
+  private id: number = 0;
 
   constructor(
     private route: ActivatedRoute,
-    private marketService: MarketService
-  ) {
+    private marketService: MarketService,
+    private modalService: ModalService,
+  ) {}
+
+  async ngOnInit(): Promise<void> {
+    const id = this.route.snapshot.paramMap.get('id');
+
+    if (id) {
+      this.id = Number(id);
+
+      try {
+        const item = await this.marketService.getItemById(this.id);
+
+        if (item) {
+          this.item = item;
+        } else {
+          console.error('No matching item found');
+        }
+
+        if (item.isAuction) {
+          await this.auctionDetails();
+          this.getChartOptions();
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }
+
+  private async auctionDetails() {
+    const bids = await this.marketService.getAuctionBids(this.id);
+    this.auctionEnd = await this.marketService.getAuctionEndTime(this.id);
+    this.bids = bids.map((bid: any) => {
+      const difference = Date.now() - (Number(bid[0]) * 1000);
+      let timeDifference = Math.floor(difference/1000/60);
+      let timeFormat = 'minutes';
+
+      if (timeDifference > 60) {
+        timeDifference = timeDifference / 60;
+        timeFormat = 'hours';
+      }
+
+      return {
+        timeAgo: timeDifference,
+        timeFormat,
+        bidder: bid[1],
+        bid: ethers.utils.formatEther(String(bid[2]))
+      }
+    });
+
+    const bidsLength = this.bids.length;
+    if (bidsLength >= 2) {
+      this.bidPercentageChange = this.percentageIncrease(
+        this.bids[bidsLength - 2].bid,
+        this.bids[bidsLength - 1].bid,
+      );
+    }
+
+    if (this.auctionEnd.days >= 0) {
+      this.auctionEnded = false;
+    }
+  }
+
+  private percentageIncrease(a: number, b: number) {
+    let percent;
+    if(b !== 0) {
+      if(a !== 0) {
+        percent = (b - a) / a * 100;
+      } else {
+        percent = b * 100;
+      }
+    } else {
+      percent = - a * 100;
+    }
+    return Math.floor(percent);
+  }
+
+  private getChartOptions() {
     this.chartOptions = {
       series: [
         {
           name: "MATIC",
-          data: [1.00, 1.01, 1.05, 1.10, 1.20, 1.50, 2.00, 3.00, 4.00]
+          data: this.bids.map(b => b.bid)
         }
       ],
       chart: {
@@ -89,11 +175,11 @@ export class DetailsComponent implements OnInit {
       stroke: {
         curve: "straight",
       },
-      labels: ['15 hour ago', '14 hour ago', '13 hour ago', '11 hour ago', '10 hour ago', '9 hour ago', '8 hour ago', '4 hour ago', '1 hour ago'],
+      labels: this.bids.map(b => `${Number(b.timeAgo).toFixed(2)} ${b.timeFormat} ago`),
       yaxis: {
         opposite: true,
         labels: {
-          formatter: function(val: number) {
+          formatter: function (val: number) {
             return val.toFixed(2);
           }
         }
@@ -120,36 +206,36 @@ export class DetailsComponent implements OnInit {
           }
         }
       },
-      colors: ['#902CF2'],
+      colors: [ '#902CF2' ],
       markers: {
-        size: [4, 7]
+        size: [ 4, 7 ]
       }
     };
   }
 
-  async ngOnInit(): Promise<void> {
-    const id = this.route.snapshot.paramMap.get('id');
+  open() {
+    this.modalService.open();
+  }
 
-    if (id) {
-      this.id = Number(id);
-
+  public async bidOnAuction(bid: number) {
+    if (this.item?.itemId) {
       try {
-        const item = await this.marketService.getItemById(this.id);
-        const bids = await this.marketService.getAuctionBids(this.id);
-        const endTime = await this.marketService.getAuctionEndTime(this.id);
-
-        if (item) {
-          this.item = item;
-          this.auctionEnd = endTime;
-          this.bids = bids;
-          console.dir(bids);
+        const transactionSuccessful = await this.marketService.bidOnAuction(this.item?.itemId, bid);
+        if (transactionSuccessful) {
+          this.modalService.close();
+          this.ngOnInit();
         } else {
-          console.error('No matching item found');
+          this.bidTransactionError = 'Transaction was not successful, please try again.';
         }
       } catch (e) {
-        console.error(e);
+        if (e instanceof Object && e.hasOwnProperty('data')) {
+          const error: any = e;
+          console.error(error?.data?.message)
+          this.bidTransactionError = error?.data?.message;
+        } else {
+          console.error(e)
+        }
       }
     }
   }
-
 }

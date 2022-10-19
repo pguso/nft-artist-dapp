@@ -1,6 +1,6 @@
 <div class="container" *ngIf="item">
   <div class="info">
-    <img [src]="item.image" class="image"/>
+    <img [src]="item.image" class="image" alt="nft image" />
     <div class="meta-data">
       <h3>{{item.name}}</h3>
       <div class="actions">
@@ -8,28 +8,45 @@
           <ng-container *ngIf="bids.length">{{bids.length}} people have bidden</ng-container>
         </span>
 
+        <!--
         <app-button label="1.1k"></app-button>
         <app-button label="..."></app-button>
+        -->
       </div>
       <div class="bidding">
         <div class="overview">
           <div class="top">
             <h4>Top Bid</h4>
-            <span>{{item.price | number: '1.2-2'}} MATIC</span>
+            <span>
+              <ng-container *ngIf="(item.isAuction && !auctionEnded) || !item.isAuction">{{item.price | number: '1.2-2'}} MATIC</ng-container>
+              <ng-container *ngIf="item.isAuction && auctionEnded">-</ng-container>
+            </span>
           </div>
-          <div class="ending" *ngIf="auctionEnd">
+
+          <div class="ending" *ngIf="auctionEnd && !auctionEnded">
             <h4>Auction ending in</h4>
             <span>
               <ng-container *ngIf="auctionEnd.days">{{auctionEnd.days}}d {{auctionEnd.hours}}h</ng-container>
-              <ng-container *ngIf="!auctionEnd.days">{{auctionEnd.hours}}h {{auctionEnd.minutes}}m</ng-container>
+              <ng-container *ngIf="!auctionEnd.days && auctionEnd.hours">{{auctionEnd.hours}}h {{auctionEnd.minutes}}m</ng-container>
+              <ng-container *ngIf="!auctionEnd.days && !auctionEnd.hours">{{auctionEnd.minutes}}m {{auctionEnd.seconds}}s</ng-container>
             </span>
           </div>
+          <div *ngIf="auctionEnd && auctionEnded">
+            <h4>Auction ended</h4>
+            <span>-</span>
+          </div>
         </div>
-        <ng-container *ngIf="!item.sold && item.isAuction">
-          <app-button [isRound]="true" label="Place a Bid" class="buy-button"></app-button>
+        <ng-container *ngIf="!item.sold && item.isAuction && !auctionEnded">
+          <app-button [isRound]="true"
+                      label="Place a Bid"
+                      class="buy-button"
+                      (click)="open()"></app-button>
         </ng-container>
         <ng-container *ngIf="!item.sold && !item.isAuction">
-          <app-button [isRound]="true" label="Buy Item" class="buy-button"></app-button>
+          <app-button [isRound]="true"
+                      label="Buy Item"
+                      class="buy-button"
+                      (click)="open()"></app-button>
         </ng-container>
       </div>
       <div class="description">{{item.description}}</div>
@@ -41,8 +58,8 @@
       <h6>Price History</h6>
       <p class="sub-title">Top Bid</p>
       <p>
-        <span class="bid">4.00 MATIC</span>
-        <span class="change">+300% than before</span>
+        <span class="bid">{{item.price | number: '1.2-2'}} MATIC</span>
+        <span class="change">+{{bidPercentageChange}}% than before</span>
       </p>
 
       <!--The content below is only a placeholder and can be replaced.-->
@@ -68,7 +85,7 @@
 
     <div class="box bids">
       <h6>Bid History</h6>
-      <p class="sub-title">9 People Already Biding</p>
+      <p class="sub-title">{{bids.length}} Bids</p>
 
       <div class="table">
         <div class="header row">
@@ -78,53 +95,10 @@
         </div>
 
         <div class="body">
-          <div class="row">
-            <div>1.00</div>
-            <div>15 hour ago</div>
-            <div>0x703a6fF1BFAD8E06F0D9eA3E08af962B9Cc0Ce67</div>
-          </div>
-          <div class="row">
-            <div>1.01</div>
-            <div>14 hour ago</div>
-            <div>0x703a6fF1BFAD8E06F0D9eA3E08af962B9Cc0Ce67</div>
-          </div>
-          <div class="row">
-            <div>1.05</div>
-            <div>13 hour ago</div>
-            <div>0x703a6fF1BFAD8E06F0D9eA3E08af962B9Cc0Ce67</div>
-          </div>
-          <div class="row">
-            <div>1.10</div>
-            <div>11 hour ago</div>
-            <div>0x703a6fF1BFAD8E06F0D9eA3E08af962B9Cc0Ce67</div>
-          </div>
-          <div class="row">
-            <div>1.20</div>
-            <div>10 hour ago</div>
-            <div>0x703a6fF1BFAD8E06F0D9eA3E08af962B9Cc0Ce67</div>
-          </div>
-          <div class="row">
-            <div>1.50</div>
-            <div>9 hour ago</div>
-            <div>0x703a6fF1BFAD8E06F0D9eA3E08af962B9Cc0Ce67</div>
-          </div>
-
-          <div class="row">
-            <div>2.00</div>
-            <div>8 hour ago</div>
-            <div>0x703a6fF1BFAD8E06F0D9eA3E08af962B9Cc0Ce67</div>
-          </div>
-
-          <div class="row">
-            <div>3.00</div>
-            <div>4 hour ago</div>
-            <div>0x703a6fF1BFAD8E06F0D9eA3E08af962B9Cc0Ce67</div>
-          </div>
-
-          <div class="row">
-            <div>4.00</div>
-            <div>1 hour ago</div>
-            <div>0x703a6fF1BFAD8E06F0D9eA3E08af962B9Cc0Ce67</div>
+          <div class="row" *ngFor="let bid of bids">
+            <div>{{bid.bid}}</div>
+            <div>{{bid.timeAgo | number: '1.0-0'}} {{bid.timeFormat}} ago</div>
+            <div>{{bid.bidder}}</div>
           </div>
         </div>
       </div>
@@ -134,3 +108,9 @@
 
   <app-items-slider [showFilter]="false" subTitle="More from this Collection"></app-items-slider>
 </div>
+
+<app-modal *ngIf="item"
+           [actualBid]="item.price"
+           [error]="bidTransactionError"
+           (newBid)="bidOnAuction($event)"
+></app-modal>
