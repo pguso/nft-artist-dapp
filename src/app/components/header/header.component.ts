@@ -16,7 +16,7 @@ export class HeaderComponent {
     @Inject(DOCUMENT) private document: Document,
     private walletService: WalletService
   ) {
-    this.restoreAddress()
+    // this.restoreAddress()
   }
 
   public async connectToWallet() {

@@ -21,6 +21,7 @@ import { ItemsSliderComponent } from './components/items-slider/items-slider.com
 import { FilterComponent } from './components/filter/filter.component';
 import { NgApexchartsModule } from "ng-apexcharts";
 import { ModalComponent } from './components/modal/modal.component';
+import { MyNftsComponent } from './pages/my-nfts/my-nfts.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { ModalComponent } from './components/modal/modal.component';
     ItemsSliderComponent,
     FilterComponent,
     ModalComponent,
+    MyNftsComponent,
   ],
   imports: [
     BrowserModule,

@@ -240,4 +240,24 @@ export class MarketService {
 
     return tx.status === 1
   }
+
+  public async getItemsByAddress() {
+    const tokenContract = await this.helperService.getTokenContract()
+    const marketContract = await this.helperService.getMarketContract()
+    const unsoldItems = await marketContract['getPurchasedItemsBySender']()
+
+    return await Promise.all(
+      unsoldItems.map(async (item: any) => {
+        console.log('item.tokenId', Number(item.tokenId))
+        const tokenUri = await tokenContract['tokenURI'](item.tokenId)
+        const meta: any = await this.http.get(tokenUri).toPromise()
+        let price = ethers.utils.formatEther(item.price.toString())
+
+        const {fileUrl, description, name, externalLink} = meta
+        return MarketService.createItem(
+          price, item, fileUrl, name, description, externalLink
+        )
+      }),
+    )
+  }
 }

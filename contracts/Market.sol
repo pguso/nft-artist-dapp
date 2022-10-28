@@ -243,9 +243,10 @@ contract Market is ReentrancyGuard, Ownable {
 
     MarketItem[] memory items = new MarketItem[](itemCount);
     for (uint256 i = 0; i < totalItemCount; i++) {
-      address matchingAddress = getMatchingAddress(isOwner, i + 1);
-      if (matchingAddress == msg.sender) {
-        uint256 currentId = idToMarketItem[i + 1].itemId;
+      uint index = i + 1;
+      address matchingAddress = getMatchingAddress(isOwner, index);
+      if (matchingAddress == msg.sender && idToMarketItem[index].sold) {
+        uint256 currentId = idToMarketItem[index].itemId;
         MarketItem storage currentItem = idToMarketItem[currentId];
         items[currentIndex] = currentItem;
         currentIndex += 1;
