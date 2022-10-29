@@ -45,7 +45,8 @@ contract Auction {
     require(!isStarted, "The auction is already started.");
     require(msg.sender == marketContract, "Only the seller can start the auction.");
 
-    TrackBid memory trackBid = TrackBid(block.timestamp, '-', startingBid);
+    TrackBid memory trackBid = TrackBid(block.timestamp, address(0), startingBid);
+    trackedBids.push(trackBid);
 
     isStarted = true;
     // endAt = block.timestamp + duration * 1 days;

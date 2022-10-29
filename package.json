@@ -24,6 +24,7 @@
     "@angular/platform-browser-dynamic": "~13.0.0",
     "@angular/router": "~13.0.0",
     "@metamask/detect-provider": "^1.2.0",
+    "apexcharts": "^3.36.0",
     "cookie-alert-demo": "github:andychiare/cookie-alert-demo",
     "ipfs-http-client": "^54.0.2",
     "nft.storage": "^7.0.0",

@@ -5,7 +5,7 @@
       <h3>{{item.name}}</h3>
       <div class="actions">
         <span>
-          <ng-container *ngIf="bids.length">{{bids.length}} people have bidden</ng-container>
+          <ng-container *ngIf="bidCount">{{bidCount}} people have bidden</ng-container>
         </span>
 
         <!--
@@ -46,14 +46,14 @@
           <app-button [isRound]="true"
                       label="Buy Item"
                       class="buy-button"
-                      (click)="open()"></app-button>
+                      (click)="buyItem()"></app-button>
         </ng-container>
       </div>
       <div class="description">{{item.description}}</div>
     </div>
   </div>
 
-  <div class="history" *ngIf="bids.length > 0">
+  <div class="history" *ngIf="bidCount > 0">
     <div class="box price">
       <h6>Price History</h6>
       <p class="sub-title">Top Bid</p>
@@ -85,7 +85,7 @@
 
     <div class="box bids">
       <h6>Bid History</h6>
-      <p class="sub-title">{{bids.length}} Bids</p>
+      <p class="sub-title">{{bidCount}} Bids</p>
 
       <div class="table">
         <div class="header row">
@@ -95,10 +95,12 @@
         </div>
 
         <div class="body">
-          <div class="row" *ngFor="let bid of bids">
-            <div>{{bid.bid}}</div>
-            <div>{{bid.timeAgo | number: '1.0-0'}} {{bid.timeFormat}} ago</div>
-            <div>{{bid.bidder}}</div>
+          <div class="row" *ngFor="let bid of bids; index as i">
+            <ng-container *ngIf="i !== 0">
+              <div>{{bid.bid}}</div>
+              <div>{{bid.timeAgo | number: '1.0-0'}} {{bid.timeFormat}} ago</div>
+              <div>{{bid.bidder}}</div>
+            </ng-container>
           </div>
         </div>
       </div>

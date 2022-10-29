@@ -55,6 +55,7 @@ export class DetailsComponent implements OnInit {
     bidder: string,
     bid: number
   }> = [];
+  public bidCount = 0;
   public bidTransactionError = '';
   public auctionEnded = true;
   public bidPercentageChange = 0;
@@ -93,7 +94,7 @@ export class DetailsComponent implements OnInit {
   }
 
   private async auctionDetails() {
-    const bids = await this.marketService.getAuctionBids(this.id);
+    let bids = await this.marketService.getAuctionBids(this.id);
     this.auctionEnd = await this.marketService.getAuctionEndTime(this.id);
     this.bids = bids.map((bid: any) => {
       const difference = Date.now() - (Number(bid[0]) * 1000);
@@ -120,6 +121,7 @@ export class DetailsComponent implements OnInit {
         this.bids[bidsLength - 1].bid,
       );
     }
+    this.bidCount = bidsLength - 1;
 
     if (this.auctionEnd.days >= 0) {
       this.auctionEnded = false;
@@ -213,8 +215,14 @@ export class DetailsComponent implements OnInit {
     };
   }
 
-  open() {
+  public open() {
     this.modalService.open();
+  }
+
+  public buyItem() {
+    if (this.item?.itemId) {
+      this.marketService.buyItem(this.item.itemId, this.item.price)
+    }
   }
 
   public async bidOnAuction(bid: number) {

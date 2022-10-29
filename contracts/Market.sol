@@ -272,7 +272,12 @@ contract Market is ReentrancyGuard, Ownable {
   }
 
   function getLatestItem() external view returns (MarketItem memory) {
-    return idToMarketItem[latestItemId];
+    MarketItem memory latestItem = idToMarketItem[latestItemId];
+    if (latestItem.sold) {
+      // TODO for loop to find an item thats not been sold yet
+      latestItem = idToMarketItem[latestItemId - 1];
+    }
+    return latestItem;
   }
 
   function getItemById(uint itemId) external view returns (MarketItem memory) {

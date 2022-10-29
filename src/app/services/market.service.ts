@@ -241,6 +241,20 @@ export class MarketService {
     return tx.status === 1
   }
 
+  public async buyItem(itemId: number, price: string) {
+    const marketContract = await this.helperService.getMarketContract(true)
+    const buyTransaction = await marketContract['sellItemAndTransferOwnership'](
+      environment.nftAddress,
+      itemId,
+      {
+        value: ethers.utils.parseUnits(price),
+      },
+    );
+    const tx = await buyTransaction.wait()
+
+    return tx.status === 1
+  }
+
   public async getItemsByAddress() {
     const tokenContract = await this.helperService.getTokenContract()
     const marketContract = await this.helperService.getMarketContract()
