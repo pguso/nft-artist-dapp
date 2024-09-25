@@ -62,6 +62,27 @@ Contributions via issues or pull requests are welcome.
    ```bash
    yarn start
 
+### Smart Contract Features
+
+The smart contracts in the **NFT Artist DApp** offer a range of functionalities, including:
+
+- **NFT Minting**: Artists can mint new NFTs directly on the Polygon blockchain.
+- **Marketplace**: Users can list NFTs for sale or purchase existing ones.
+- **Auction Support**: 
+  - Bid on NFTs with features like minimum bid settings, bid tracking, and automatic auction finalization.
+- **Ownership Transfer**: Automated ownership transfer upon sale or auction completion.
+
+These Solidity-based contracts ensure secure and transparent interactions for all participants.
+
+### DApp Features
+
+The **NFT Artist DApp** provides a user-friendly interface that offers:
+
+- **Intuitive Web UI**: Easily deploy, mint, and manage NFTs through a simple and interactive interface.
+- **Real-Time Interactions**: Users can interact with the blockchain and view updates like NFT listings and auctions in real-time.
+- **Wallet Integration**: Seamlessly connect with your crypto wallet (e.g., MetaMask) for secure transactions.
+- **Cross-Chain Support**: While primarily focused on Polygon, the DApp can be extended for multi-chain support.
+- **Responsive Design**: Optimized for both desktop and mobile use.
 
 
 Let me know if you'd like any further modifications!
